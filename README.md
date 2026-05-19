@@ -26,47 +26,59 @@ Developed by: Priyadharshini V
 RegisterNumber: 212225230219
 
 
+
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor, plot_tree
-from sklearn.metrics import accuracy_score, classification_report
+
 data = pd.read_csv("Salary.csv")
-X = data.drop("Salary", axis=1)
+
+print(data.head())
+
+print(data.info())
+
+print(data.isnull().sum())
+
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+data["Position"] = le.fit_transform(data["Position"])
+
+print(data.head())
+
+x = data[["Position", "Level"]]
 y = data["Salary"]
-X = pd.get_dummies(X, drop_first=True)
-#X_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)
-model = DecisionTreeRegressor(random_state=42)
-model.fit(X, y)
-y_pred = model.predict(X)
-# Accuracy
-print("\nAccuracy:", accuracy_score(y, y_pred)*100)
 
-# Classification Report
-print("\nClassification Report:")
-print(classification_report(y, y_pred))
+from sklearn.model_selection import train_test_split
 
-plt.figure(figsize=(25,12))
-plot_tree(
-    model,
-    feature_names=X.columns,
-    filled=True
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, test_size=0.2, random_state=2
 )
 
-plt.title("Decision Tree Regressor")
-plt.show()
+from sklearn.tree import DecisionTreeRegressor
 
+dt = DecisionTreeRegressor(random_state=2)
 
+dt.fit(x_train, y_train)
 
+y_pred = dt.predict(x_test)
+
+from sklearn import metrics
+
+mse = metrics.mean_squared_error(y_test, y_pred)
+print("Mean Squared Error:", mse)
+
+r2 = metrics.r2_score(y_test, y_pred)
+print("R2 Score:", r2)
+
+prediction = dt.predict([[5, 6]])
+
+print("Predicted Salary:", prediction[0])
  
 */
 ```
 
 ## Output:
 
-<img width="646" height="441" alt="Screenshot 2026-05-18 225056" src="https://github.com/user-attachments/assets/e24862ff-4061-4ec1-9337-67160844c70b" />
-<img width="1464" height="694" alt="Screenshot 2026-05-18 225111" src="https://github.com/user-attachments/assets/f55094d8-eb16-4101-8cba-72c987866564" />
-
+<img width="647" height="649" alt="Screenshot 2026-05-19 114111" src="https://github.com/user-attachments/assets/69a3f8df-b2c2-4e3e-a072-c966e3794cdb" />
 
 
 ## Result:
